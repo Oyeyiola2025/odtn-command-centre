@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Fallback Content-Security-Policy for hosts that cannot send HTTP headers.
+       The full policy (incl. frame-ancestors) is sent as a header via _headers / vercel.json. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>ODTN Command Centre</title>
+  <meta name="description" content="Interactive incident-response training simulator based on the Operation Defend the North (ODTN) Ontario supply-chain cyberattack scenario.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="data.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <div class="training-banner" role="note">
+    TRAINING SIMULATION · All organisations, people, systems and data are fictional · No real data is collected
+  </div>
+
+  <header class="topbar">
+    <div class="brand">
+      <img src="favicon.svg" alt="" width="32" height="32">
+      <div>
+        <div class="brand-name">ODTN CyberDefence</div>
+        <div class="brand-sub">Incident Response Command Centre</div>
+      </div>
+    </div>
+    <div class="status-cluster">
+      <span class="sev-badge">SEV-1</span>
+      <span class="clock" aria-label="Simulated incident clock">
+        <span class="clock-label">SIM CLOCK</span>
+        <span id="sim-clock">Dec 21 08:12</span>
+      </span>
+    </div>
+  </header>
+
+  <nav class="mainnav" aria-label="Sections">
+    <a href="#/dashboard" data-nav="dashboard"><span class="num">01</span> Dashboard</a>
+    <a href="#/timeline" data-nav="timeline"><span class="num">02</span> Timeline</a>
+    <a href="#/investigate" data-nav="investigate"><span class="num">03</span> Investigate</a>
+    <a href="#/decisions" data-nav="decisions"><span class="num">04</span> Decisions</a>
+    <a href="#/recovery" data-nav="recovery"><span class="num">05</span> Recovery</a>
+    <a href="#/about" data-nav="about"><span class="num">i</span> About &amp; Security</a>
+  </nav>
+
+  <main id="main" tabindex="-1">
+
+    <!-- ============ 01 DASHBOARD ============ -->
+    <section class="view" id="view-dashboard" data-view="dashboard" hidden>
+      <div class="view-head">
+        <p class="eyebrow">01 · Executive dashboard</p>
+        <h1>Payments are failing across Ontario</h1>
+        <p class="lede" id="scenario-summary"></p>
+      </div>
+
+      <div class="panel">
+        <h2 class="panel-title">Choose your role</h2>
+        <div class="role-picker" id="role-picker" role="radiogroup" aria-label="Your role"></div>
+        <p class="role-objective" id="role-objective">Pick a role to receive your objective.</p>
+      </div>
+
+      <div class="kpis">
+        <div class="kpi"><span class="kpi-label">Transaction success</span><span class="kpi-value" id="kpi-success">38%</span><span class="kpi-note">baseline 99.6%</span></div>
+        <div class="kpi"><span class="kpi-label">Merchants affected</span><span class="kpi-value">4,812</span><span class="kpi-note">across 4 sectors</span></div>
+        <div class="kpi"><span class="kpi-label">Incident stage</span><span class="kpi-value small" id="kpi-stage">Detection</span><span class="kpi-note" id="kpi-stage-note">Investigate to progress</span></div>
+        <div class="kpi"><span class="kpi-label">Readiness score</span><span class="kpi-value" id="kpi-score">–</span><span class="kpi-note">complete the exercises</span></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-row">
+            <h2 class="panel-title">Live alert feed</h2>
+            <button type="button" class="btn btn-ghost btn-sm" id="feed-toggle" aria-pressed="false">Pause feed</button>
+          </div>
+          <ul class="alert-feed" id="alert-feed" aria-live="polite" aria-relevant="additions"></ul>
+        </div>
+
+        <div>
+          <div class="panel">
+            <h2 class="panel-title">Sector impact</h2>
+            <div class="sectors" id="sectors"></div>
+          </div>
+          <div class="panel">
+            <h2 class="panel-title">Your mission</h2>
+            <ol class="mission" id="mission"></ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 02 TIMELINE ============ -->
+    <section class="view" id="view-timeline" data-view="timeline" hidden>
+      <div class="view-head">
+        <p class="eyebrow">02 · Incident timeline</p>
+        <h1>How the attack unfolded</h1>
+        <p class="lede">Open each event to see the evidence and the lesson behind it. Filter by type to follow one thread of the incident.</p>
+      </div>
+      <div class="filter-bar" id="timeline-filters" role="group" aria-label="Filter events">
+        <button type="button" class="chip" data-filter="all" aria-pressed="true">All</button>
+        <button type="button" class="chip" data-filter="technical" aria-pressed="false">Technical</button>
+        <button type="button" class="chip" data-filter="business" aria-pressed="false">Business impact</button>
+        <button type="button" class="chip" data-filter="comms" aria-pressed="false">Communications</button>
+      </div>
+      <p class="progress-note" id="timeline-progress"></p>
+      <ol class="timeline" id="timeline"></ol>
+    </section>
+
+    <!-- ============ 03 INVESTIGATE ============ -->
+    <section class="view" id="view-investigate" data-view="investigate" hidden>
+      <div class="view-head">
+        <p class="eyebrow">03 · Investigation centre</p>
+        <h1>Find the indicators of compromise</h1>
+        <p class="lede">These 18 log entries mix real attacker activity with normal operations and noise. Flag every line you believe is an <strong>indicator of compromise (IOC)</strong> for this incident, then submit your findings.</p>
+      </div>
+
+      <div class="panel">
+        <div class="log-tools">
+          <label class="field">
+            <span>Search logs</span>
+            <input type="search" id="log-search" maxlength="60" autocomplete="off" spellcheck="false" placeholder="e.g. 203.0.113.47 or tillagent">
+          </label>
+          <label class="field">
+            <span>Source</span>
+            <select id="log-source"><option value="">All sources</option></select>
+          </label>
+          <span class="log-count" id="log-count" aria-live="polite"></span>
+        </div>
+        <p class="field-error" id="log-search-error" role="alert" hidden></p>
+
+        <div class="table-wrap">
+          <table class="logs">
+            <thead><tr><th scope="col">Flag</th><th scope="col">Time</th><th scope="col">Source</th><th scope="col">Event</th></tr></thead>
+            <tbody id="log-body"></tbody>
+          </table>
+        </div>
+
+        <div class="panel-row actions">
+          <span id="flag-count">0 lines flagged</span>
+          <div class="btn-row">
+            <button type="button" class="btn btn-ghost" id="inv-reset">Reset</button>
+            <button type="button" class="btn btn-primary" id="inv-submit">Submit findings</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel result" id="inv-result" hidden tabindex="-1"></div>
+    </section>
+
+    <!-- ============ 04 DECISIONS ============ -->
+    <section class="view" id="view-decisions" data-view="decisions" hidden>
+      <div class="view-head">
+        <p class="eyebrow">04 · Decision simulator</p>
+        <h1>Lead the response</h1>
+        <p class="lede">Five modules mirror the ODTN Ontario exercise. Every choice moves four measures. There is rarely a perfect answer – only trade-offs.</p>
+      </div>
+
+      <div class="meters" id="meters"></div>
+
+      <div class="panel" id="decision-panel">
+        <div class="stepper" id="stepper" aria-hidden="true"></div>
+        <p class="eyebrow" id="module-tag"></p>
+        <h2 class="situation" id="module-situation"></h2>
+        <div class="options" id="module-options"></div>
+        <div class="feedback" id="module-feedback" hidden tabindex="-1"></div>
+        <div class="panel-row actions">
+          <button type="button" class="btn btn-ghost" id="dec-restart">Restart simulation</button>
+          <button type="button" class="btn btn-primary" id="dec-next" hidden>Next module</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 05 RECOVERY ============ -->
+    <section class="view" id="view-recovery" data-view="recovery" hidden>
+      <div class="view-head">
+        <p class="eyebrow">05 · Recovery &amp; lessons learned</p>
+        <h1>Restore services safely</h1>
+        <p class="lede">Rushing recovery can re-introduce the attacker. Build the recovery sequence, test your knowledge, then generate your after-action report.</p>
+      </div>
+
+      <div class="panel">
+        <h2 class="panel-title">A · Build the recovery sequence</h2>
+        <p class="muted">Select the steps in the order you would perform them.</p>
+        <div class="grid-2 tight">
+          <div>
+            <h3 class="mini-title">Available steps</h3>
+            <div class="step-pool" id="step-pool"></div>
+          </div>
+          <div>
+            <h3 class="mini-title">Your plan</h3>
+            <ol class="step-plan" id="step-plan"></ol>
+          </div>
+        </div>
+        <div class="panel-row actions">
+          <span id="seq-result" role="status"></span>
+          <div class="btn-row">
+            <button type="button" class="btn btn-ghost" id="seq-reset">Clear plan</button>
+            <button type="button" class="btn btn-primary" id="seq-check">Check sequence</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2 class="panel-title">B · Lessons-learned quiz</h2>
+        <div id="quiz"></div>
+        <div class="panel-row actions">
+          <span id="quiz-result" role="status"></span>
+          <button type="button" class="btn btn-primary" id="quiz-submit">Submit answers</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2 class="panel-title">C · After-action report</h2>
+        <form id="report-form" class="report-form" novalidate>
+          <label class="field">
+            <span>Your name or team name (optional)</span>
+            <input type="text" id="report-name" maxlength="40" autocomplete="off" spellcheck="false" aria-describedby="report-name-hint">
+            <small id="report-name-hint">Letters, spaces, apostrophes, hyphens and full stops only. Max 40 characters. Never stored or sent anywhere.</small>
+          </label>
+          <p class="field-error" id="report-name-error" role="alert" hidden></p>
+          <button type="submit" class="btn btn-primary">Generate report</button>
+        </form>
+        <article class="report" id="report" hidden tabindex="-1"></article>
+      </div>
+
+      <div class="panel">
+        <h2 class="panel-title">Key ODTN lessons</h2>
+        <ul class="lessons" id="lessons"></ul>
+      </div>
+    </section>
+
+    <!-- ============ ABOUT & SECURITY ============ -->
+    <section class="view" id="view-about" data-view="about" hidden>
+      <div class="view-head">
+        <p class="eyebrow">About this project</p>
+        <h1>About &amp; security design</h1>
+      </div>
+
+      <div class="grid-2">
+        <div class="panel prose">
+          <h2 class="panel-title">The scenario</h2>
+          <p>Based on the <strong>Operation Defend the North (ODTN) Ontario kickoff</strong> scenario: a hypothetical supply-chain cyberattack shortly before Christmas causing widespread payment-processing failures across retail, pharmacies, transportation and government. The exercise’s five modules – technical evidence, system logs, customer complaints, conflicting information and internal communication – map directly to this site’s decision simulator.</p>
+          <p>Lessons are also drawn from other ODTN sessions reviewed: the Vancouver lessons-learned session (human factors, crown jewels), the Ottawa proactive-defence module (containment, incident command, vendor security) and the Calgary recovery simulation (staged recovery, client priorities).</p>
+          <h2 class="panel-title">Audience &amp; purpose</h2>
+          <p>Students, junior SOC analysts and non-technical managers who need to understand what a cross-sector cyber incident feels like from the inside – and practise the decisions it demands – in a safe setting.</p>
+          <h2 class="panel-title">Built with</h2>
+          <p>Plain HTML, CSS and JavaScript with no frameworks, libraries or third-party scripts. Built with AI assistance (Claude), with every file reviewed against the security checklist on the right.</p>
+        </div>
+
+        <div class="panel prose">
+          <h2 class="panel-title">Security by design</h2>
+          <ul class="checklist">
+            <li><strong>No secrets.</strong> No API keys, tokens or credentials exist anywhere in the code – there is nothing to leak.</li>
+            <li><strong>No backend, no data collection.</strong> Nothing you type leaves your browser. No forms submit to a server, no analytics, no cookies.</li>
+            <li><strong>Strict Content-Security-Policy.</strong> Only this site’s own scripts and styles may run; no inline scripts, no <code>eval</code>, no external connections, and the site cannot be framed (clickjacking).</li>
+            <li><strong>No <code>innerHTML</code>.</strong> All dynamic content is built with <code>textContent</code> and DOM APIs, so input can never become executable HTML (XSS).</li>
+            <li><strong>Allow-list input validation.</strong> The name field accepts only letters and a few punctuation marks, length-limited; log search is length-limited and uses plain text matching (no user-supplied regex).</li>
+            <li><strong>Untrusted storage.</strong> Progress saved in <code>sessionStorage</code> is re-validated on load, so tampered values are discarded rather than trusted.</li>
+            <li><strong>Hardened headers.</strong> HSTS, nosniff, no-referrer, frame denial and a locked-down Permissions-Policy.</li>
+            <li><strong>Safe indicators.</strong> All IPs and domains use reserved documentation ranges (RFC 5737, <code>.example</code>) so nothing points at a real system.</li>
+            <li><strong>No fake login.</strong> Role selection is deliberately not “authentication” – adding passwords to a site with nothing to protect would only create attack surface.</li>
+          </ul>
+          <h2 class="panel-title">Known limitations</h2>
+          <p>Scores are calculated in the browser, so a determined user can alter their own score with developer tools. That is acceptable for a no-stakes training tool; any graded or competitive version would need server-side scoring.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="toasts" id="toasts" aria-live="assertive"></div>
+
+  <footer class="footer">
+    <p>Educational simulation inspired by Operation Defend the North. Not affiliated with any real company. All scenario data is fictional.</p>
+  </footer>
+</body>
+</html>
