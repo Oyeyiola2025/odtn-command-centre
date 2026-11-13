@@ -2,6 +2,8 @@
 
 An interactive incident-response simulator based on the **Operation Defend the North (ODTN) Ontario supply-chain cyberattack** scenario.
 
+**Live site:** https://odtn-command-centre.vercel.app/ (hosted on Vercel, so the security headers in `vercel.json` are applied)
+
 ## Submission summary
 
 **Scenario chosen:** ODTN Ontario kickoff. A hypothetical supply-chain cyberattack shortly before Christmas causes widespread payment-processing failures across retailers, pharmacies, transportation and government organisations. The exercise's five modules (technical evidence, system logs, customer complaints, conflicting information, internal communication) become the five rounds of the decision simulator. Lessons are also drawn from the Vancouver, Ottawa and Calgary ODTN sessions.
